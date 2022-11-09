@@ -19,13 +19,14 @@ reserved = {
     'WAIT': 'wait',
     'in': 'library',
     'PIN': 'PIN',
-    'IN': 'IN',
-    'OUT': 'OUT'
+    'entero': 'INTEGER',
+    'string': 'STRING',
+    'decimal': 'FLOAT',
+    'logico': 'BOOLEAN'
 }
 
 tokens = [
              'IDENT',
-             'TEXTO',
              'ENTERO',
              'DECIMAL',
              'LOGICO',
@@ -53,7 +54,8 @@ tokens = [
              'PUNTO',
              'NOT',
              'SPACE',
-             'COMMENT'
+             'COMMENT',
+             'PINTYPE'
          ] + list(reserved.values())
 
 # Regular expression rules for simple tokens
@@ -84,12 +86,6 @@ t_ignore_SPACE = r'\t'
 
 
 # A regular expression rule with some action code
-def t_IDENT(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value, 'IDENT')  # Check for reserved words
-    return t
-
-
 def t_ENTERO(t):
     r'\d+'
     t.value = int(t.value)
@@ -101,18 +97,19 @@ def t_DECIMAL(t):
     t.value = float(t.value)
     return t
 
-
-def t_TEXTO(t):
-    r'\w+'
-    t.value = str(t.value)
+def t_PINTYPE(t):
+    r'IN|OUT'
     return t
-
 
 def t_LOGICO(t):
     r'true|false'
     t.value = bool(t.value)
     return t
 
+def t_IDENT(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value, 'IDENT')  # Check for reserved words
+    return t
 
 # Comment discard section
 def t_COMMENT(t):
@@ -149,8 +146,8 @@ f.close()
 lexer.input(data)
 
 #Tokenize
-while True:
-    tok = lexer.token()
-    if not tok:
-        break  # No more input
-    print(tok.type, tok.value, tok.lineno, tok.lexpos)
+# while True:
+#     tok = lexer.token()
+#     if not tok:
+#         break  # No more input
+#     print(tok.type, tok.value, tok.lineno, tok.lexpos)
